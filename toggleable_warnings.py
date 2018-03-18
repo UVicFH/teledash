@@ -22,7 +22,6 @@ class Toggleable_warning(object):
 
 	def __bool__(self):
 		return self.on
-	__nonzero__ = __bool__
 
 	def toggle(self):
 		self.on = not self.on # flip self.on truth value

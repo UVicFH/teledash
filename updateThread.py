@@ -26,7 +26,7 @@ from toggleable_warnings import *
 
 MSTIMEOUT = 100 # in milliseconds
 WARNING_DISPLAY_DURATION = 0.75 # in seconds, as most things in this app
-WARNINGS_DEMO = False
+WARNINGS_DEMO = True
 
 import random as rn # for the purposes of the warning demo
 
@@ -173,7 +173,7 @@ class UpdateThread(QThread):
 				self.demo_altered = time.time()
 				self.demo_interval = rn.uniform(3,10)
 				if rn.uniform(0,1) < 0.333:
-					for warning in self.active_warnings():
+					for warning in self.example_warnings:
 						warning.switch_off()
         
 
