@@ -26,7 +26,7 @@ from toggleable_warnings import *
 
 MSTIMEOUT = 100 # in milliseconds
 WARNING_DISPLAY_DURATION = 0.75 # in seconds, as most things in this app
-WARNINGS_DEMO = True
+WARNINGS_DEMO = False
 
 import random as rn # for the purposes of the warning demo
 
@@ -180,25 +180,21 @@ class UpdateThread(QThread):
 		if message.arbitration_id == arbitration_ids.rpm:
 
 			# rpm is sent as two bits which needs to be combined again after
-			rpm = message.data[0]<<8 | message.data[0]
+			rpm = message.data[6]<<8 | message.data[7]
 
 			# rpmAngle is what is sent to the UI current which is from -150 to 150 corresponding to 0 to 12000
-			rpmAngle = int(rpm/40.0-150.0)
+			rpmAngle = rpm/40.0-150.0
 			self.rpm.emit(rpmAngle)
 
 		# the rest of these are strightforward
 
-		elif message.arbitration_id == arbitration_ids.speed:
-			self.speed.emit(str(message.data[0])) # speed is is a string
-
-		elif message.arbitration_id == arbitration_ids.gear:
-			self.gear.emit(str(message.data[0])) # gear is a string
-
-		elif message.arbitration_id == arbitration_ids.charge:
-			self.chargePercent.emit(message.data[0]) # chargePercent is an integer
+		elif message.arbitration_id == arbitration_ids.groundspeed:
+			self.gear.emit(str(message.data[6]&0b1111)) # gear is a string
+			self.speed.emit(str(message.data[4])) # speed is is a string
+			self.chargePercent.emit(message.data[5]) # chargePercent is an integer
 		
 		elif message.arbitration_id == arbitration_ids.fuel:
-			self.fuelPercent.emit(message.data[0]) # fuelPercent is an integer
+			self.fuelPercent.emit(message.data[4]) # fuelPercent is an integer
 		
 		
 
