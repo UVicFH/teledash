@@ -9,7 +9,7 @@ Rectangle {
 	FontLoader { id: lcdFont; source: "fonts/digital-7.ttf" }
 
 	// 800 480 is the real car probably
-	property int screenwide: 800
+	property int screenwide: 640
 	property int screenhigh: 480
 
 	// Take up the whole screen
