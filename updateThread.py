@@ -157,7 +157,8 @@ class UpdateThread(QThread):
 		else:
 			self.timeout_warning.switch_off()
 		
-		self.display_status()
+		# Commented out to display coolant temperature in the warning zone.
+		# self.display_status()
 
 		
 		if WARNINGS_DEMO:
@@ -193,6 +194,9 @@ class UpdateThread(QThread):
 		
 		elif message.arbitration_id == arbitration_ids.fuel:
 			self.fuelPercent.emit(message.data[4]) # fuelPercent is an integer
+
+		elif message.arbitration_id == arbitration_ids.coolant:
+			self.statusText.emit(str(message.data[6]<<8 | message.data[7])) # status text needs to come out as string
 		
 		
 
