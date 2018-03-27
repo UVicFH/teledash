@@ -196,3 +196,4 @@ class UpdateThread(QThread):
 
 		elif message.arbitration_id == arbitration_ids.coolant:
 			self.statusText.emit(str(message.data[6]<<8 | message.data[7])) # status text needs to come out as string
+
