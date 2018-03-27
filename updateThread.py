@@ -17,8 +17,6 @@ import can
 # you may need to "bring up" the interface first with: sudo /sbin/ip link set can0 up type can bitrate 500000
 # ^ not yet tested without doing this - if required will need to be automated
 import os
-os.system('sudo ./set_up_can.sh')
-print("If RETLINK answered 'Device or resource busy' don't worry.")
 bus=can.interface.Bus(channel='can0', bustype='socketcan_native')
 
 import arbitration_ids
