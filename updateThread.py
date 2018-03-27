@@ -174,7 +174,6 @@ class UpdateThread(QThread):
 				if rn.uniform(0,1) < 0.333:
 					for warning in self.example_warnings:
 						warning.switch_off()
-        
 
 		if message.arbitration_id == arbitration_ids.rpm:
 
@@ -191,12 +190,9 @@ class UpdateThread(QThread):
 			self.gear.emit(str(message.data[6]&0b1111)) # gear is a string
 			self.speed.emit(str(message.data[4])) # speed is is a string
 			self.chargePercent.emit(message.data[5]) # chargePercent is an integer
-		
+
 		elif message.arbitration_id == arbitration_ids.fuel:
 			self.fuelPercent.emit(message.data[4]) # fuelPercent is an integer
 
 		elif message.arbitration_id == arbitration_ids.coolant:
 			self.statusText.emit(str(message.data[6]<<8 | message.data[7])) # status text needs to come out as string
-		
-		
-
