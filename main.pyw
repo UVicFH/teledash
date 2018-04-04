@@ -28,7 +28,10 @@ class MainWindow(QQuickView):
 
 	# the following functions set the QML properties
 	def updateSpeed(self, speed):
-		self.qml.setProperty("speed", speed)
+                self.qml.setProperty("speednum", speed)
+
+        def updateSpeed(self, speedAngle):
+                self.qml.setProperty("speedAngle", speedAngle)
 
 	def updateGear(self, gear):
 		self.qml.setProperty("gear", gear)
@@ -46,7 +49,10 @@ class MainWindow(QQuickView):
 		self.qml.setProperty("fuelpercent", fuelPercent)
 
 	def updateRpm(self, rpm):
-		self.qml.setProperty("rpmAngle", rpm)
+                self.qml.setProperty("rpmnum", rpm)
+
+        def updateRpm(self, rpmAngle):
+                self.qml.setProperty("rpmAngle", rpmAngle)
 
 	# the updateThread runs parellel to the UI
 	def setupUpdateThread(self):  
