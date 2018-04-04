@@ -1,0 +1,45 @@
+<svg style="background-color: #2B00AA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" height="320" width="320" id="tach">
+
+	<path d="M 85 290
+		A 150,150 0 1 1 235 290" stroke="white" fill="rbg(0,0,0)" fill-opacity="0" stroke-width="10"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(-150, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(-150, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(-125, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(-125, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(-100, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(-100, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(-75, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(-75, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(-50, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(-50, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(-25, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(-25, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(0, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(0, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(25, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(25, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(50, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(50, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(75, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(75, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(100, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(100, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(125, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(125, 160, 160)"/>
+
+	<line x1="160" y1="30" x2="160" y2="16" stroke="#2B00AA" stroke-linecap="square" stroke-width="14" transform="rotate(150, 160, 160)"/>
+	<line x1="160" y1="40" x2="160" y2="13" stroke="white" stroke-width="7" transform="rotate(150, 160, 160)"/>
+
+</svg>
