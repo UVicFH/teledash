@@ -1,211 +1,363 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 
 Rectangle {
 
 	id: bodyRectangle
 
+	// Load the LCD font
+	FontLoader { id: lcdFont; source: "fonts/digital-7.ttf" }
+
 	// 800 480 is the real car probably
-	property int screenwide: 800
-	property int screenhigh: 480
-	
+	property int screenwide: 1280
+	property int screenhigh: 800
+
 	// Take up the whole screen
-    width: screenwide
-    height: screenhigh
+	width: screenwide
+	height: screenhigh
 
-    // Define properties for colours and texts
-    color: "#2B00AA"
-    property color goodstatus: "#07DD07"
-    property color linecolor: "white"
-    property color rpmbg: "#7B7DFB"
-    property color rpmactive: "red"
-    property color rpmnumber: "white"
-    property color speedcolor: "white"
-    property color gearcolor: "white"
-    property string statustext: "OK"
-    property string speed: "-"
-    property string gear: "-" 
-    property int rpm: 0
-    property int start: 500
-   	property int peak: 10000
+	// Define properties for colours and texts
+	color: "#2B00AA"
+	property color statuscolor: "#07DD07"
+	property color linecolor: "white"
+	property color rpmbg: "#7B7DFB"
+	property color rpmactive: "red"
+	property color rpmnumber: "white"
+	property color speedcolor: "white"
+	property color gearcolor: "white"
+	property string statustext: "OK"
+	property string speed: "-"
+	property string gear: "-" 
+	property int rpmAngle: -150
+	property int start: 1500
+	property int peak: 10000
 	property int maxrpm: 14000
+	property int fuelpercent: 100
+	property int chargepercent: 100
 
-	function rpmcolour(i){
-		if(rpm > (maxrpm - start)/(60)*i+start-(maxrpm - start)/(60)){
-			return rpmactive
+	// Main actual wrapper
+	Row {
+
+		// Have 4% margin each side
+		width: screenwide
+		height:screenhigh*0.92
+		anchors.horizontalCenter: parent.horizontalCenter
+		anchors.verticalCenter: parent.verticalCenter
+
+		// Tach
+		Rectangle{
+
+			width: parent.width*.6
+			height: parent.height
+			color: bodyRectangle.color
+
+			// Tach
+			Image {
+
+				x: parent.width/2-parent.height/2
+				source: "images/tach.svg"
+				sourceSize.height: parent.height
+				height: parent.height
+
+			}
+
+			// Needle
+			Image {
+
+				id: needle
+				x: parent.width/2-parent.height*15/330
+				y: parent.height*.5*30/330
+				source: "images/needle.svg"
+				sourceSize.height: parent.height*.5
+				height: parent.height*.5
+				transform: Rotation { origin.x: needle.height*30/330; origin.y: needle.height*300/330; angle: rpmAngle}
+
+			}
+
+			// 12
+			Text{
+
+				x:parent.width*.653 - this.width/2
+				y:parent.height*.765 - this.height/2
+				text:"12"
+				height: parent.height*.1
+				width:this.height
+				font.pixelSize: this.height
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				color: "white"
+				font.family: lcdFont.name
+			
+			}
+
+			// 10
+			Text{
+
+				x:parent.width*.774 - this.width/2
+				y:parent.height*.553 - this.height/2
+				text:"10"
+				height: parent.height*.1
+				width:this.height
+				font.pixelSize: this.height
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				color: "white"
+				font.family: lcdFont.name
+			
+			}
+
+			// 8
+			Text{
+
+				x:parent.width*.734 - this.width/2
+				y:parent.height*.304 - this.height/2
+				text:"8"
+				height: parent.height*.1
+				width:this.height
+				font.pixelSize: this.height
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				color: "white"
+				font.family: lcdFont.name
+			
+			}
+
+			// 6
+			Text{
+
+				x:parent.width*.5 - this.width/2
+				y:parent.height*.194 - this.height/2
+				text:"6"
+				height: parent.height*.1
+				width:this.height
+				font.pixelSize: this.height
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				color: "white"
+				font.family: lcdFont.name
+			
+			}
+
+			// 4
+			Text{
+
+				x:parent.width*.266 - this.width/2
+				y:parent.height*.304 - this.height/2
+				text:"4"
+				height: parent.height*.1
+				width:this.height
+				font.pixelSize: this.height
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				color: "white"
+				font.family: lcdFont.name
+			
+			}
+
+			// 2
+			Text{
+
+				x:parent.width*.226 - this.width/2
+				y:parent.height*.553 - this.height/2
+				text:"2"
+				height: parent.height*.1
+				width:this.height
+				font.pixelSize: this.height
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				color: "white"
+				font.family: lcdFont.name
+			
+			}
+
+			// 0
+			Text{
+
+				x:parent.width*.347 - this.width/2
+				y:parent.height*.765 - this.height/2
+				text:"0"
+				height: parent.height*.1
+				width:this.height
+				font.pixelSize: this.height
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				color: "white"
+				font.family: lcdFont.name
+			
+			}
+			
 		}
-		else{
-			return rpmbg
+
+		Column{
+
+			width: parent.width*.4
+			height: parent.height
+			
+			Row{
+
+				width: parent.width
+				height: parent.height*.33
+
+				Column{
+
+					width:parent.width*.7
+					height:parent.height
+
+					Text{
+
+						width: parent.width
+						height: parent.height*.2
+						color: speedcolor
+						text: "Speed"
+						verticalAlignment: Text.AlignVCenter
+						font.pixelSize: this.height
+						font.family: lcdFont.name
+
+					}
+
+					Text{
+
+						width: parent.width
+						height: parent.height*.8
+						color: speedcolor
+						text: speed
+						verticalAlignment: Text.AlignVCenter
+						font.pixelSize: this.height
+						font.family: lcdFont.name
+
+					}
+
+				}
+
+				Column{
+
+					width:parent.width*.3
+					height:parent.height
+
+					Text{
+
+						width: parent.width
+						height: parent.height*.2
+						color: speedcolor
+						text: "Gear"
+						verticalAlignment: Text.AlignVCenter
+						font.pixelSize: this.height
+						font.family: lcdFont.name
+
+					}
+
+					Text{
+
+						width: parent.width
+						height: parent.height*.8
+						color: speedcolor
+						text: gear
+						verticalAlignment: Text.AlignVCenter
+						font.pixelSize: this.height
+						font.family: lcdFont.name
+
+					}
+
+				}
+				
+			}
+
+			// Status
+			Text{
+
+				width: parent.width
+				height: parent.height*.33
+				color: statuscolor
+				text: statustext
+				verticalAlignment: Text.AlignVCenter
+				horizontalAlignment: Text.AlignHCenter
+				font.pixelSize: this.height
+				font.family: lcdFont.name
+				
+			}
+
+			// Fuel
+			Text{
+
+				width: parent.width
+				height: parent.height*0.066
+				color: speedcolor
+				text: "Fuel"
+				verticalAlignment: Text.AlignVCenter
+				font.pixelSize: this.height
+				font.family: lcdFont.name
+				
+			}
+
+			// Fuelbar
+			Rectangle{
+
+				width: parent.width*.9
+				height: parent.height*.1
+				color: "#373AF9"
+
+				Item{
+
+					width:parent.width*fuelpercent/100
+					height:parent.height
+					
+					LinearGradient {
+						anchors.fill: parent
+						start: Qt.point(0, 0)
+						end: Qt.point(parent.parent.width*.9, 0)
+						gradient: Gradient {
+							GradientStop { position: 0.0; color: "red" }
+							GradientStop { position: 0.25; color: "yellow" }
+							GradientStop { position: 0.5; color: "green" }
+							GradientStop { position: 1.0; color: "green" }
+						}
+					}
+				}
+			}
+
+			// Charge
+			Text{
+
+				width: parent.width
+				height: parent.height*0.066
+				color: speedcolor
+				text: "Charge"
+				verticalAlignment: Text.AlignVCenter
+				font.pixelSize: this.height
+				font.family: lcdFont.name
+				
+			}
+
+			// Chargebar
+			Rectangle{
+
+				width: parent.width*.9
+				height: parent.height*.1
+				color: "#373AF9"
+
+				Item{
+
+					width:parent.width*chargepercent/100
+					height:parent.height
+					
+					LinearGradient {
+						anchors.fill: parent
+						start: Qt.point(0, 0)
+						end: Qt.point(parent.parent.width*.9, 0)
+						gradient: Gradient {
+							GradientStop { position: 0.0; color: "red" }
+							GradientStop { position: 0.25; color: "yellow" }
+							GradientStop { position: 0.5; color: "green" }
+							GradientStop { position: 1.0; color: "green" }
+						}
+					}
+
+				}
+			}
+			
+			
 		}
+
 	}
 
-
-    // Main actual wrapper
-    Column {
-
-    	// Have 4% margin each side
-        width: screenwide*0.92
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        // Status text display
-        Rectangle { 
-            width: parent.width
-            height: screenhigh*0.2
-            color: parent.parent.color
-            
-            // Actual text item
-            Text { 
-            	anchors.centerIn: parent
-                font.pixelSize: parent.height
-                text: statustext
-                color: goodstatus
-            } 
-      	}
-
-      	// Line dividing status from data
-      	Rectangle { 
-
-        	color: linecolor
-            width: parent.width
-            height: screenhigh*0.001
-      	}
-
-      	// Spacer before Row containing tach and etc
-      	Item { 
-
-            width: parent.width
-            height: screenhigh*0.05
-      	}
-
-      	// Row containing the tach etc
-      	Row {
-
-      		width: parent.width*.85
-
-      		// Column containing tach and numbering
-			Column { 
-
-	            width: parent.width
-	            height: screenhigh*0.699
-
-	            Row{
-
-	            	width: parent.width
-	            	height:parent.height*.90
-	            	property int peakheight: parent.height*.90
-	            	property int startheight: parent.height*.85*.2
-
-	            	property int linecount: 60
-
-	            	function rpm(i){
-	            		return (maxrpm - start)/(linecount)*i+start-(maxrpm - start)/(linecount)
-	            	}
-
-	            	function height(i){
-	            		return (startheight - peakheight)/(start - peak)/(start - peak)*(rpm(i)-peak)*(rpm(i)-peak)+peakheight
-	            	}
-
-		            Rectangle{property int i:1; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:2; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:3; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:4; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:5; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:6; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:7; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:8; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:9; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:10; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:11; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:12; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:13; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:14; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:15; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:16; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:17; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:18; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:19; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:20; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:21; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:22; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:23; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:24; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:25; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:26; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:27; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:28; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:29; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:30; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:31; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:32; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:33; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:34; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:35; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:36; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:37; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:38; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:39; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:40; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:41; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:42; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:43; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:44; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:45; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:46; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:47; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:48; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:49; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:50; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:51; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:52; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:53; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:54; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:55; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:56; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:57; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:58; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:59; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		            Rectangle{property int i:60; height:parent.height(i); width:parent.width/parent.linecount; color:rpmcolour(i); anchors.bottom: parent.bottom}
-		           	
-	            }
-
-	            Row{
-
-	            	property int textHeight: parent.height*.05
-
-	            	Text {width:screenwide/32*2.56; text: "500"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-	            	Text {width:screenwide/32*3.41; text: "2000"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-	            	Text {width:screenwide/32*3.41; text: "4000"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-	            	Text {width:screenwide/32*3.41; text: "6000"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-	            	Text {width:screenwide/32*3.41; text: "8000"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-	            	Text {width:screenwide/32*3.41; text: "10000"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-	            	Text {width:screenwide/32*3.41; text: "12000"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-	            	Text {width:screenwide/32*3.41; text: "14000"; font.pixelSize: parent.textHeight; color: rpmnumber} 
-
-	            }
-
-	      	}
-
-	      	Column { 
-
-	            width: parent.width*0.15
-	            height: screenhigh*10/17
-
-		        Text {
-		        	anchors.horizontalCenter: parent.horizontalCenter
-	                font.pixelSize: screenhigh*4/17
-	                text: speed
-	                color: "white"
-	            } 
-
-	            Text { 
-	            	anchors.horizontalCenter: parent.horizontalCenter
-	                font.pixelSize: screenhigh*4/17
-	                text: gear
-	                color: "white"
-	            } 
-	            
-	      	}
-
-      	}
-
-    }
 }

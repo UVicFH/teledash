@@ -202,4 +202,4 @@ class UpdateThread(QThread):
 			self.fuelPercent.emit(message.data[4]) # fuelPercent is an integer
 
 		elif message.arbitration_id == arbitration_ids.coolant:
-			self.statusText.emit(str(int(message.data[6]<<8 | message.data[7])/10) # status text needs to come out as string
+			self.statusText.emit(str(int(message.data[6]<<8 | message.data[7])/10)) # status text needs to come out as string
