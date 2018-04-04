@@ -32,10 +32,10 @@ class UpdateThread(QThread):
 
 	# create signals that can be linked to update functions for the UI
 	gear = pyqtSignal(str)
-        speed = pyqtSignal(str)
-        speedAngle = pyqtSignal(int)
-        rpm = pyqtSignal(str)
-        rpmAngle = pyqtSignal(int)
+	speed = pyqtSignal(str)
+	speedAngle = pyqtSignal(int)
+	rpm = pyqtSignal(str)
+	rpmAngle = pyqtSignal(int)
 	statusText = pyqtSignal(str)
 	statusColor = pyqtSignal(str)
 	chargePercent = pyqtSignal(int)
@@ -180,20 +180,22 @@ class UpdateThread(QThread):
 		if message.arbitration_id == arbitration_ids.rpm:
 
 			# rpm is sent as two bits which needs to be combined again after
-                        rpmdata = message.data[6]<<8 | message.data[7]
+			rpmdata = message.data[6]<<8 | message.data[7]
 
 			# rpmAngle is what is sent to the UI current which is from -150 to 150 corresponding to 0 to 12000
-                        rpmAngledata = rpmdata/52.17 - 115;
-                        self.rpm.emit(str(rpmdata))
-                        self.rpmAngle.emit(rpmAngledata)
+				rpmAngledata = rpmdata/52.17-115
+				self.rpm.emit(str(rpmdata))
+				self.rpmAngle.emit(rpmAngledata)
 
 		# the rest of these are strightforward
 
 		elif message.arbitration_id == arbitration_ids.groundspeed:
 			self.gear.emit(str(message.data[6]&0b1111)) # gear is a string
-                        self.speed.emit(str(message.data[4])) # speed is is a string
-                        speedAngledata = (message.data[4])/0.52 - 115;
-                        self.speedAngle.emit(speedAngledata)
+			self.speed.emit(str(message.data[4])) # speed is is a string
+			
+			speedAngledata = (message.data[4])/0.52-115
+			self.speedAngle.emit(speedAngledata)
+			
 			self.chargePercent.emit(message.data[5]) # chargePercent is an integer
 
 		elif message.arbitration_id == arbitration_ids.fuel:
@@ -201,4 +203,3 @@ class UpdateThread(QThread):
 
 		elif message.arbitration_id == arbitration_ids.coolant:
 			self.statusText.emit(str(int(message.data[6]<<8 | message.data[7])/10) # status text needs to come out as string
-
