@@ -52,7 +52,7 @@ class UpdateThread(QThread):
 		self.current_warning = None
 
 		self.sender = Mosquitto_Sender()
-		self.sender.connect("test.mosquitto.org")
+		self.sender.connect("192.168.88.245")
 		self.sender.start_handler()
 
 		if WARNINGS_DEMO:
