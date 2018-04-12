@@ -51,9 +51,9 @@ class UpdateThread(QThread):
 		self.warnings = [self.timeout_warning]
 		self.current_warning = None
 
-		sender = Mosquitto_Sender()
-		sender.connect("test.mosquitto.org")
-		sender.start_handler()
+		self.sender = Mosquitto_Sender()
+		self.sender.connect("192.168.137.1")
+		self.sender.start_handler()
 
 		if WARNINGS_DEMO:
 			# this block for warning demo stuff
@@ -154,8 +154,8 @@ class UpdateThread(QThread):
 	def checkForUpdates(self):
 
 		# see if the server is connected and if not retry
-		if(!sender.connection_success):
-			sender.retry_connect()
+		if(self.sender.connection_success == False):
+			self.sender.retry_connect()
 		
 		# recieve a message on the bus and timeout after MSTIMEOUT ms, in which case the gui will show a timeout
 		message = bus.recv(MSTIMEOUT/1000)
@@ -190,7 +190,7 @@ class UpdateThread(QThread):
 
 			# rpm is sent as two bits which needs to be combined again after
 			rpm = message.data[6]<<8 | message.data[7]
-			sender.send("hybrid/dash/rpm", str(time.time()) + ":" + str(rpm))
+			self.sender.send("hybrid/dash/rpm", str(time.time()) + ":" + str(rpm))
 
 			# rpmAngle is what is sent to the UI current which is from -150 to 150 corresponding to 0 to 12000
 			rpmAngle = rpm/40.0-150.0
@@ -201,24 +201,24 @@ class UpdateThread(QThread):
 		elif message.arbitration_id == arbitration_ids.groundspeed:
 			gear = str(message.data[6]&0b1111)
 			self.gear.emit(gear) # gear is a string
-			sender.send("hybrid/dash/gear", str(time.time()) + ":" + str(gear))
+			self.sender.send("hybrid/dash/gear", str(time.time()) + ":" + str(gear))
 
 			speed = str(message.data[4])
 			self.speed.emit(speed) # speed is is a string
-			sender.send("hybrid/dash/speed", str(time.time()) + ":" + str(speed))
+			self.sender.send("hybrid/dash/speed", str(time.time()) + ":" + str(speed))
 
 			chargePercent = message.data[5]
 			self.chargePercent.emit(chargePercent) # chargePercent is an integer
-			sender.send("hybrid/pack/charge", str(time.time()) + ":" + str(chargePercent))
+			self.sender.send("hybrid/pack/charge", str(time.time()) + ":" + str(chargePercent))
 
 		elif message.arbitration_id == arbitration_ids.fuel:
 
 			fuelPercent = message.data[4]
 			self.fuelPercent.emit(fuelPercent) # fuelPercent is an integer
-			sender.send("hybrid/engine/fuel", str(time.time()) + ":" + str(fuelPercent))
+			self.sender.send("hybrid/engine/fuel", str(time.time()) + ":" + str(fuelPercent))
 
 		elif message.arbitration_id == arbitration_ids.coolant:
 
 			coolantTemp = str(int(message.data[6]<<8 | message.data[7])/10)
 			self.statusText.emit(coolantTemp) # status text needs to come out as strin
-			sender.send("hybrid/engine/temperature", str(time.time()) + ":" + str(coolantTemp))
+			self.sender.send("hybrid/engine/temperature", str(time.time()) + ":" + str(coolantTemp))
