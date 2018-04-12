@@ -52,7 +52,7 @@ class UpdateThread(QThread):
 		self.current_warning = None
 
 		self.sender = Mosquitto_Sender()
-		self.sender.connect("192.168.137.1")
+		self.sender.connect("test.mosquitto.org")
 		self.sender.start_handler()
 
 		if WARNINGS_DEMO:
@@ -247,7 +247,7 @@ class UpdateThread(QThread):
 
 			# Send the AFR
 			AFR = int(message.data[4]<<8 | message.data[5])/10
-			elf.sender.send("hybrid/engine/AFR", str(time.time()) + ":" + str(AFR))
+			self.sender.send("hybrid/engine/AFR", str(time.time()) + ":" + str(AFR))
 
 		elif message.arbitration_id == arbitration_ids.advance:
 
@@ -257,7 +257,7 @@ class UpdateThread(QThread):
 
 			# Send the target AFR
 			AFRtgt = int(message.data[4])/10
-			elf.sender.send("hybrid/engine/AFRtgt", str(time.time()) + ":" + str(AFRtgt))
+			self.sender.send("hybrid/engine/AFRtgt", str(time.time()) + ":" + str(AFRtgt))
 
 		elif message.arbitration_id == arbitration_ids.motor_duty:
 
