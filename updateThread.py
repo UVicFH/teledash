@@ -242,7 +242,7 @@ class UpdateThread(QThread):
 		elif message.arbitration_id == arbitration_ids.tps:
 
 			# Send the throttle position
-			TPS = str(int(message.data[0]<<8 | message.data[1])/10)
+			TPS = str(int(message.data[0]<<8 | message.data[1])/10.0)
 			self.sender.send("hybrid/engine/TPS", str(time.time()) + ":" + str(TPS))
 
 			# Send the AFR
