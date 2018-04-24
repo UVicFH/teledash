@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 import time
 
-class mosquitto_sender():
+class Mosquitto_Sender():
 	
 	# function called on initialization
 	def __init__(self):

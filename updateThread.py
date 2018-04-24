@@ -12,6 +12,9 @@ import paho.mqtt.client as mqtt
 # import can - requires python-can
 import can
 
+# import class to interface with mqtt
+from mosquitto_sender import Mosquitto_Sender
+
 # create a can bus on the can0 interface
 # requires interface be set up before opening as detailed here (done on Pi already): http://skpang.co.uk/blog/archives/1220
 # you may need to "bring up" the interface first with: sudo /sbin/ip link set can0 up type can bitrate 500000
@@ -47,6 +50,10 @@ class UpdateThread(QThread):
 		self.timeout_warning = Toggleable_warning("Timed out", "T/O")
 		self.warnings = [self.timeout_warning]
 		self.current_warning = None
+
+		sender = Mosquitto_Sender()
+		sender.connect("test.mosquitto.org")
+		sender.start_handler()
 
 		if WARNINGS_DEMO:
 			# this block for warning demo stuff
@@ -145,6 +152,10 @@ class UpdateThread(QThread):
 
 
 	def checkForUpdates(self):
+
+		# see if the server is connected and if not retry
+		if(!sender.connection_success):
+			sender.retry_connect()
 		
 		# recieve a message on the bus and timeout after MSTIMEOUT ms, in which case the gui will show a timeout
 		message = bus.recv(MSTIMEOUT/1000)
@@ -179,6 +190,7 @@ class UpdateThread(QThread):
 
 			# rpm is sent as two bits which needs to be combined again after
 			rpm = message.data[6]<<8 | message.data[7]
+			sender.send("hybrid/dash/rpm", str(time.time()) + ":" + str(rpm))
 
 			# rpmAngle is what is sent to the UI current which is from -150 to 150 corresponding to 0 to 12000
 			rpmAngle = rpm/40.0-150.0
@@ -187,13 +199,26 @@ class UpdateThread(QThread):
 		# the rest of these are strightforward
 
 		elif message.arbitration_id == arbitration_ids.groundspeed:
-			self.gear.emit(str(message.data[6]&0b1111)) # gear is a string
-			self.speed.emit(str(message.data[4])) # speed is is a string
-			self.chargePercent.emit(message.data[5]) # chargePercent is an integer
+			gear = str(message.data[6]&0b1111)
+			self.gear.emit(gear) # gear is a string
+			sender.send("hybrid/dash/gear", str(time.time()) + ":" + str(gear))
+
+			speed = str(message.data[4])
+			self.speed.emit(speed) # speed is is a string
+			sender.send("hybrid/dash/speed", str(time.time()) + ":" + str(speed))
+
+			chargePercent = message.data[5]
+			self.chargePercent.emit(chargePercent) # chargePercent is an integer
+			sender.send("hybrid/pack/charge", str(time.time()) + ":" + str(chargePercent))
 
 		elif message.arbitration_id == arbitration_ids.fuel:
-			self.fuelPercent.emit(message.data[4]) # fuelPercent is an integer
+
+			fuelPercent = message.data[4]
+			self.fuelPercent.emit(fuelPercent) # fuelPercent is an integer
+			sender.send("hybrid/engine/fuel", str(time.time()) + ":" + str(fuelPercent))
 
 		elif message.arbitration_id == arbitration_ids.coolant:
-			self.statusText.emit(str(int(message.data[6]<<8 | message.data[7])/10) # status text needs to come out as string
 
+			coolantTemp = str(int(message.data[6]<<8 | message.data[7])/10)
+			self.statusText.emit(coolantTemp) # status text needs to come out as strin
+			sender.send("hybrid/engine/temperature", str(time.time()) + ":" + str(coolantTemp))
