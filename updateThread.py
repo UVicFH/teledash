@@ -197,7 +197,7 @@ class UpdateThread(QThread):
 			self.rpm.emit(rpmAngle)
 
 			# pulse width is the the next two bits / 1000
-			pw = str(int(message.data[2]<<8 | message.data[3])/1000)
+			pw = str(int(message.data[2]<<8 | message.data[3])/1000.0)
 			self.sender.send("hybrid/engine/pw", str(time.time()) + ":" + str(pw))
 
 		elif message.arbitration_id == arbitration_ids.groundspeed:
@@ -222,11 +222,11 @@ class UpdateThread(QThread):
 
 		elif message.arbitration_id == arbitration_ids.coolant:
 
-			coolantTemp = str(int(message.data[6]<<8 | message.data[7])/10)
+			coolantTemp = str(int(message.data[6]<<8 | message.data[7])/10.0)
 			self.statusText.emit(coolantTemp) # status text needs to come out as strin
 			self.sender.send("hybrid/engine/temperature", str(time.time()) + ":" + str(coolantTemp))
 
-			MAT = str(int(message.data[4]<<8 | message.data[5])/10)
+			MAT = str(int(message.data[4]<<8 | message.data[5])/10.0)
 			self.sender.send("hybrid/engine/MAT", str(time.time()) + ":" + str(MAT))
 
 		elif message.arbitration_id == arbitration_ids.vehicle_slow:
@@ -246,17 +246,17 @@ class UpdateThread(QThread):
 			self.sender.send("hybrid/engine/TPS", str(time.time()) + ":" + str(TPS))
 
 			# Send the AFR
-			AFR = int(message.data[4]<<8 | message.data[5])/10
+			AFR = int(message.data[4]<<8 | message.data[5])/10.0
 			self.sender.send("hybrid/engine/AFR", str(time.time()) + ":" + str(AFR))
 
 		elif message.arbitration_id == arbitration_ids.advance:
 
 			# Send the spark advance
-			spkadv = str(int(message.data[0]<<8 | message.data[1])/10)
+			spkadv = str(int(message.data[0]<<8 | message.data[1])/10.0)
 			self.sender.send("hybrid/engine/spkadv", str(time.time()) + ":" + str(spkadv))
 
 			# Send the target AFR
-			AFRtgt = int(message.data[4])/10
+			AFRtgt = int(message.data[4])/10.0
 			self.sender.send("hybrid/engine/AFRtgt", str(time.time()) + ":" + str(AFRtgt))
 
 		elif message.arbitration_id == arbitration_ids.motor_duty:
