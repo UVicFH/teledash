@@ -249,6 +249,10 @@ class UpdateThread(QThread):
 			AFR = int(message.data[4]<<8 | message.data[5])/10.0
 			self.sender.send("hybrid/engine/AFR", str(time.time()) + ":" + str(AFR))
 
+			# Send the battery voltage
+			GLVolts = int(message.data[2]<<8 | message.data[3])/10.0
+			self.sender.send("hybrid/dash/GLVoltage", str(time.time()) + ":" + str(GLVolts))
+
 		elif message.arbitration_id == arbitration_ids.advance:
 
 			# Send the spark advance
