@@ -52,8 +52,8 @@ class UpdateThread(QThread):
 		self.current_warning = None
 
 		self.sender = Mosquitto_Sender()
-		self.sender.connect("test.mosquitto.org")
-		self.sender.start_handler()
+		# self.sender.connect("test.mosquitto.org")
+		# self.sender.start_handler()
 
 		if WARNINGS_DEMO:
 			# this block for warning demo stuff
@@ -154,8 +154,8 @@ class UpdateThread(QThread):
 	def checkForUpdates(self):
 
 		# see if the server is connected and if not retry
-		if(self.sender.connection_success == False):
-			self.sender.retry_connect()
+		#if(self.sender.connection_success == False):
+		#	self.sender.retry_connect()
 		
 		# recieve a message on the bus and timeout after MSTIMEOUT ms, in which case the gui will show a timeout
 		message = bus.recv(MSTIMEOUT/1000)
@@ -190,7 +190,7 @@ class UpdateThread(QThread):
 
 			# rpm is sent as two bits which needs to be combined again after
 			rpm = int(message.data[6]<<8 | message.data[7])
-			self.sender.send("hybrid/dash/rpm", str(time.time()) + ":" + str(rpm))
+			#self.sender.send("hybrid/dash/rpm", str(time.time()) + ":" + str(rpm))
 
 			# rpmAngle is what is sent to the UI current which is from -150 to 150 corresponding to 0 to 12000
 			rpmAngle = rpm/40.0-150.0
@@ -198,86 +198,86 @@ class UpdateThread(QThread):
 
 			# pulse width is the the next two bits / 1000
 			pw = str(int(message.data[2]<<8 | message.data[3])/1000.0)
-			self.sender.send("hybrid/engine/pw", str(time.time()) + ":" + str(pw))
+			#self.sender.send("hybrid/engine/pw", str(time.time()) + ":" + str(pw))
 
 		elif message.arbitration_id == arbitration_ids.groundspeed:
 
 			gear = str(message.data[6]&0b1111)
 			self.gear.emit(gear) # gear is a string
-			self.sender.send("hybrid/dash/gear", str(time.time()) + ":" + str(gear))
+			#self.sender.send("hybrid/dash/gear", str(time.time()) + ":" + str(gear))
 
 			speed = str(message.data[4])
 			self.speed.emit(speed) # speed is is a string
-			self.sender.send("hybrid/dash/speed", str(time.time()) + ":" + str(speed))
+			#self.sender.send("hybrid/dash/speed", str(time.time()) + ":" + str(speed))
 
 			chargePercent = message.data[5]
 			self.chargePercent.emit(chargePercent) # chargePercent is an integer
-			self.sender.send("hybrid/pack/charge", str(time.time()) + ":" + str(chargePercent))
+			#self.sender.send("hybrid/pack/charge", str(time.time()) + ":" + str(chargePercent))
 
 		elif message.arbitration_id == arbitration_ids.fuel:
 
 			fuelPercent = int(message.data[4])
 			self.fuelPercent.emit(fuelPercent) # fuelPercent is an integer
-			self.sender.send("hybrid/engine/fuel", str(time.time()) + ":" + str(fuelPercent))
+			#self.sender.send("hybrid/engine/fuel", str(time.time()) + ":" + str(fuelPercent))
 
 		elif message.arbitration_id == arbitration_ids.coolant:
 
 			coolantTemp = str(int(message.data[6]<<8 | message.data[7])/10.0)
 			self.statusText.emit(coolantTemp) # status text needs to come out as strin
-			self.sender.send("hybrid/engine/temperature", str(time.time()) + ":" + str(coolantTemp))
+			#self.sender.send("hybrid/engine/temperature", str(time.time()) + ":" + str(coolantTemp))
 
 			MAT = str(int(message.data[4]<<8 | message.data[5])/10.0)
-			self.sender.send("hybrid/engine/MAT", str(time.time()) + ":" + str(MAT))
+			#self.sender.send("hybrid/engine/MAT", str(time.time()) + ":" + str(MAT))
 
 		elif message.arbitration_id == arbitration_ids.vehicle_slow:
 
 			# Send the throttle driver input
 			driverThrottle = int(message.data[2])
-			self.sender.send("hybrid/driverinputs/throttle", str(time.time()) + ":" + str(driverThrottle))
+			#self.sender.send("hybrid/driverinputs/throttle", str(time.time()) + ":" + str(driverThrottle))
 
 			# Send the brake driver input
 			driverBrake = int(message.data[3])
-			self.sender.send("hybrid/driverinputs/brake", str(time.time()) + ":" + str(driverBrake))
+			#self.sender.send("hybrid/driverinputs/brake", str(time.time()) + ":" + str(driverBrake))
 
 		elif message.arbitration_id == arbitration_ids.tps:
 
 			# Send the throttle position
 			TPS = str(int(message.data[0]<<8 | message.data[1])/10.0)
-			self.sender.send("hybrid/engine/TPS", str(time.time()) + ":" + str(TPS))
+			#self.sender.send("hybrid/engine/TPS", str(time.time()) + ":" + str(TPS))
 
 			# Send the AFR
 			AFR = int(message.data[4]<<8 | message.data[5])/10.0
-			self.sender.send("hybrid/engine/AFR", str(time.time()) + ":" + str(AFR))
+			#self.sender.send("hybrid/engine/AFR", str(time.time()) + ":" + str(AFR))
 
 			# Send the battery voltage
 			GLVolts = int(message.data[2]<<8 | message.data[3])/10.0
-			self.sender.send("hybrid/dash/GLVoltage", str(time.time()) + ":" + str(GLVolts))
+			#self.sender.send("hybrid/dash/GLVoltage", str(time.time()) + ":" + str(GLVolts))
 
 		elif message.arbitration_id == arbitration_ids.advance:
 
 			# Send the spark advance
 			spkadv = str(int(message.data[0]<<8 | message.data[1])/10.0)
-			self.sender.send("hybrid/engine/spkadv", str(time.time()) + ":" + str(spkadv))
+			#self.sender.send("hybrid/engine/spkadv", str(time.time()) + ":" + str(spkadv))
 
 			# Send the target AFR
 			AFRtgt = int(message.data[4])/10.0
-			self.sender.send("hybrid/engine/AFRtgt", str(time.time()) + ":" + str(AFRtgt))
+			#self.sender.send("hybrid/engine/AFRtgt", str(time.time()) + ":" + str(AFRtgt))
 
 		elif message.arbitration_id == arbitration_ids.motor_duty:
 
 			# Send the motor duty
 			duty = int(message.data[1])
-			self.sender.send("hybrid/motor/duty", str(time.time()) + ":" + str(duty))
+			#self.sender.send("hybrid/motor/duty", str(time.time()) + ":" + str(duty))
 
 		elif message.arbitration_id == arbitration_ids.controller:
 
 			# Send the controller temperature
 			temperature = int(message.data[3])
-			self.sender.send("hybrid/controller/temperature", str(time.time()) + ":" + str(temperature))
+			#self.sender.send("hybrid/controller/temperature", str(time.time()) + ":" + str(temperature))
 
 			# Send the FETMOS temperatures
 			FETMOSHighSide = int(message.data[4])
-			self.sender.send("hybrid/controller/FETMOSHigh", str(time.time()) + ":" + str(FETMOSHighSide))
+			#self.sender.send("hybrid/controller/FETMOSHigh", str(time.time()) + ":" + str(FETMOSHighSide))
 
 			FETMOSLowSide = int(message.data[5])
-			self.sender.send("hybrid/controller/FETMOSLow", str(time.time()) + ":" + str(FETMOSLowSide))
+			#self.sender.send("hybrid/controller/FETMOSLow", str(time.time()) + ":" + str(FETMOSLowSide))
