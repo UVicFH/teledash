@@ -52,7 +52,7 @@ class UpdateThread(QThread):
 		self.current_warning = None
 
 		self.sender = Mosquitto_Sender()
-		self.sender.connect("192.168.88.245")
+		self.sender.connect("192.168.1.221")
 		self.sender.start_handler()
 
 		if WARNINGS_DEMO:
@@ -212,7 +212,7 @@ class UpdateThread(QThread):
 
 			chargePercent = message.data[5]
 			self.chargePercent.emit(chargePercent) # chargePercent is an integer
-			self.sender.send("hybrid/pack/charge", str(time.time()) + ":" + str(chargePercent))
+			self.sender.send("hybrid/dash/charge", str(time.time()) + ":" + str(chargePercent))
 
 		elif message.arbitration_id == arbitration_ids.fuel:
 
@@ -269,15 +269,32 @@ class UpdateThread(QThread):
 			duty = int(message.data[1])
 			self.sender.send("hybrid/motor/duty", str(time.time()) + ":" + str(duty))
 
-		elif message.arbitration_id == arbitration_ids.controller:
+		elif message.arbitration_id == arbitration_ids.ams1:
 
-			# Send the controller temperature
-			temperature = int(message.data[3])
-			self.sender.send("hybrid/controller/temperature", str(time.time()) + ":" + str(temperature))
+			voltage = int(message.data[0] << 8 | message.data[1])/100.0
+			self.sender.send("hybrid/ams/voltage", str(time.time()) + ":" + str(voltage))
 
-			# Send the FETMOS temperatures
-			FETMOSHighSide = int(message.data[4])
-			self.sender.send("hybrid/controller/FETMOSHigh", str(time.time()) + ":" + str(FETMOSHighSide))
+			current = int((message.data[6] << 8 | message.data[7]) & 0b0111111111111111)/100.0
+			if((message.data[6] & 0b10000000) >> 7):
+				current = current * -1
+			self.sender.send("hybrid/ams/current", str(time.time()) + ":" + str(current))
 
-			FETMOSLowSide = int(message.data[5])
-			self.sender.send("hybrid/controller/FETMOSLow", str(time.time()) + ":" + str(FETMOSLowSide))
+			ams_status = int(message.data[4] & 0b00000010 >> 1)
+			self.sender.send("hybrid/ams/ams_status", str(time.time()) + ":" + str(ams_status))
+
+			regen_status = int(message.data[4] & 0b00000001)
+			self.sender.send("hybrid/ams/regen_status", str(time.time()) + ":" + str(regen_status))
+
+		elif message.arbitration_id == arbitration_ids.ams2:
+
+			max_cell_num = int(message.data[0])
+			self.sender.send("hybrid/ams/max_cell_num", str(time.time()) + ":" + str(max_cell_num))
+
+			max_cell_volts = int(message.data[1] << 8 | message.data[2])/1000.0
+			self.sender.send("hybrid/ams/max_cell_volts", str(time.time()) + ":" + str(max_cell_volts))
+
+			min_cell_num = int(message.data[3])
+			self.sender.send("hybrid/ams/min_cell_num", str(time.time()) + ":" + str(min_cell_num))
+
+			min_cell_volts = int(message.data[4] << 8 | message.data[5])/1000.0
+			self.sender.send("hybrid/ams/min_cell_volts", str(time.time()) + ":" + str(min_cell_volts))
