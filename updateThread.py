@@ -202,6 +202,9 @@ class UpdateThread(QThread):
 
 		elif message.arbitration_id == arbitration_ids.groundspeed:
 
+			powersplit = str(message.data[0])
+			self.sender.send("hybrid/dash/powersplit", str(time.time()) + ":" + str(powersplit))
+			
 			gear = str(message.data[6]&0b1111)
 			self.gear.emit(gear) # gear is a string
 			self.sender.send("hybrid/dash/gear", str(time.time()) + ":" + str(gear))
@@ -263,21 +266,14 @@ class UpdateThread(QThread):
 			AFRtgt = int(message.data[4])/10.0
 			self.sender.send("hybrid/engine/AFRtgt", str(time.time()) + ":" + str(AFRtgt))
 
-		elif message.arbitration_id == arbitration_ids.motor_duty:
-
-			# Send the motor duty
-			duty = int(message.data[1])
-			self.sender.send("hybrid/motor/duty", str(time.time()) + ":" + str(duty))
-
 		elif message.arbitration_id == arbitration_ids.ams1:
 
 			voltage = int(message.data[0] << 8 | message.data[1])/100.0
 			self.sender.send("hybrid/ams/voltage", str(time.time()) + ":" + str(voltage))
 
-			current = int((message.data[6] << 8 | message.data[7]) & 0b0111111111111111)/100.0
-			if((message.data[6] & 0b10000000) >> 7):
-				current = current * -1
-			self.sender.send("hybrid/ams/current", str(time.time()) + ":" + str(current))
+			current1 = message.data[6]
+			current2 = message.data[7]
+			self.sender.send("hybrid/ams/current", str(time.time()) + ": byte1 - " + "{0:b}".format(current1) + "byte 2 - " + "{0:b}".format(current2))
 
 			ams_status = int(message.data[4] & 0b00000010 >> 1)
 			self.sender.send("hybrid/ams/ams_status", str(time.time()) + ":" + str(ams_status))
