@@ -268,29 +268,58 @@ class UpdateThread(QThread):
 
 		elif message.arbitration_id == arbitration_ids.ams1:
 
+			# Accumulator voltage
 			voltage = int(message.data[0] << 8 | message.data[1])/100.0
 			self.sender.send("hybrid/ams/voltage", str(time.time()) + ":" + str(voltage))
 
-			current1 = message.data[6]
-			current2 = message.data[7]
-			self.sender.send("hybrid/ams/current", str(time.time()) + ": byte1 - " + "{0:b}".format(current1) + "byte 2 - " + "{0:b}".format(current2))
+			# Accumulator current
+			current1 = ((message.data[5]<<8 | message.data[6])) #combining bytes
+			if (current1 & (1 << (16 -1))) != 0:	#turing 2s comp into regular binary
+				current1 = current1-(1<<16)
+			current1 = int(current1)/100.0
+			self.sender.send("hybrid/ams/current", str(time.time()) + ":" + str(current1))
 
+			# AMS Status
 			ams_status = int(message.data[4] & 0b00000010 >> 1)
 			self.sender.send("hybrid/ams/ams_status", str(time.time()) + ":" + str(ams_status))
 
+			# AMS regen status
 			regen_status = int(message.data[4] & 0b00000001)
 			self.sender.send("hybrid/ams/regen_status", str(time.time()) + ":" + str(regen_status))
 
 		elif message.arbitration_id == arbitration_ids.ams2:
 
+			# Number of the cell with the highest voltage
 			max_cell_num = int(message.data[0])
 			self.sender.send("hybrid/ams/max_cell_num", str(time.time()) + ":" + str(max_cell_num))
 
+			# Voltage of the cell with the highest voltage
 			max_cell_volts = int(message.data[1] << 8 | message.data[2])/1000.0
 			self.sender.send("hybrid/ams/max_cell_volts", str(time.time()) + ":" + str(max_cell_volts))
 
+			# Number of the cell with the lowest voltage
 			min_cell_num = int(message.data[3])
 			self.sender.send("hybrid/ams/min_cell_num", str(time.time()) + ":" + str(min_cell_num))
 
+			# Voltage of the cell with the lowest voltage
 			min_cell_volts = int(message.data[4] << 8 | message.data[5])/1000.0
 			self.sender.send("hybrid/ams/min_cell_volts", str(time.time()) + ":" + str(min_cell_volts))
+
+		elif message.arbitration_id == arbitration_ids.datalog3:
+
+			# FL suspension sensor
+			FL_susp = int(message.data[4])*2
+			self.sender.send("hybrid/chassic/FL_susp", str(time.time()) + ":" + str(FL_susp))
+
+			# FR suspension sensor
+			FR_susp = int(message.data[5])*2
+			self.sender.send("hybrid/chassic/FR_susp", str(time.time()) + ":" + str(FR_susp))
+
+			# RL suspension sensor
+			RL_susp = int(message.data[6])*2
+			self.sender.send("hybrid/chassic/RL_susp", str(time.time()) + ":" + str(RL_susp))
+
+			# RR suspension sensor
+			RR_susp = int(message.data[7])*2
+			self.sender.send("hybrid/chassic/RR_susp", str(time.time()) + ":" + str(RR_susp))
+
