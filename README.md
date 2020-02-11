@@ -37,3 +37,5 @@ It is most conventient to autorun this program by appending the following line t
 ```
 python3 /mnt/USB/telemetry.py
 ```
+## License
+This project is under the GNU GENERAL PUBLIC LICENSE V3. Please see [LICENSE.md](LICENSE.md) for more details. 
