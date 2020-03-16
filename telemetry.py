@@ -57,7 +57,7 @@ while(1):
 
         try:
             decoded = str(db.decode_message(message.arbitration_id, message.data))
-            decoded.replace("'", "\"")
+            decoded = decoded.replace("'", "\"")
         except:
             "Message ID: " + str(message.arbitration_id) + " not found in database and not recorded"
             decoded = '{"none": 0}'
@@ -69,7 +69,8 @@ while(1):
             messageName = "Unknown"
 
         # print(decoded + "\n")
-        jsonString = '\'{"'+ messageName + '":' + decoded + '}\''
+        timeStamp = str(time.time())
+        jsonString = '\'{"timestamp": ' + timeStamp + ', "'+ messageName + '":' + decoded + '}\''
         mqttSender.send("hybrid/" + messageName, jsonString)
         datalog.write(jsonString + "\r\n")
 
